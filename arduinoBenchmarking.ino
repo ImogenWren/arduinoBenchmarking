@@ -67,10 +67,14 @@ static inline size_t stack_size() {
   return stackSize;
 }
 
-void printStats() {
+void printStats(const char *context = "n/a") {
   char buffer[128];
-  sprintf(buffer, "RAM (total): %i, (used): %i, (free): %i, (max): %i, (stacksize): %i", startStack, usedMem, freeRam, maxStack, stackSize);
+  sprintf(buffer, "%s RAM (total): %i, (used): %i, (free): %i, (max): %i, (stacksize): %i", context, startStack, usedMem, freeRam, maxStack, stackSize);
   Serial.println(buffer);
+}
+
+void nestedPrintStats() {
+  printStats("Nested");
 }
 
 void setup() {
@@ -85,6 +89,7 @@ void setup() {
   Serial.println(TOTAL_SRAM_BYTES);
   Serial.print("Global Vars Use: ");
   Serial.println(TOTAL_SRAM_BYTES - startStack);
+  Serial.print("Stack Size: ");
   Serial.println(stack_size());
 }
 
@@ -94,11 +99,12 @@ int intArray[] = { 1, 2, 3 };
 
 void addToArray(int newVal) {
   int arraySize = sizeof(intArray) / sizeof(intArray[0]);
-  intArray[arraySize-1] = newVal;
+  intArray[arraySize - 1] = newVal;
 }
 
 void printArray(const int localArray[]) {
   int arraySize = sizeof(intArray) / sizeof(intArray[0]);
+  getRAMstats("printArray");
   for (int i = 0; i < arraySize; i++) {
     Serial.print(localArray[i]);
     Serial.print(", ");
@@ -112,14 +118,20 @@ void spareFunction(const char *charString) {
   Serial.println(charString);
 }
 
-void loop() {
-  freeMemory();  // update global variable freeRam
+void getRAMstats(const char *context) {
+  freeMemory();
   stack_size();
   max_stack_size();
   usedMemory();
+  printStats(context);
+}
+
+
+void loop() {
+  getRAMstats("loop");
   delay(2000);
-  printStats();
-  spareFunction(nameString);
-  addToArray(random());
-  printArray(intArray);
+
+  // spareFunction(nameString);
+  // addToArray(random());
+  //  printArray(intArray);
 }
