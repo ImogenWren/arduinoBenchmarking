@@ -19,13 +19,9 @@ Global variables use 340 bytes (4%) of dynamic memory, leaving 7852 bytes for lo
 
 #define BOARD_TYPE MEGA
 
-#if BOARD_TYPE == MEGA
-#define TOTAL_SRAM_BYTES 8192
-#elif BOARD_TYPE == UNO
-#define TOTAL_SRAM_BYTES 2000
-#endif
+#include "trackRAM.h"
 
-volatile size_t min_sp = RAMEND;
+
 
 ISR(TIMER0_COMPA_vect) {
   if (SP < min_sp)
@@ -46,14 +42,7 @@ static inline size_t max_stack_size() {
 
 
 
-int freeRam;
 
-int freeMemory() {
-  extern int __heap_start, *__brkval;
-  int v;
-  freeRam = (int)&v - (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
-  return freeRam;
-}
 
 int usedMem;
 int usedMemory() {
@@ -61,21 +50,10 @@ int usedMemory() {
   return usedMem;
 }
 
-int stackSize;
-static inline size_t stack_size() {
-  stackSize = RAMEND - SP;
-  return stackSize;
-}
 
-void printStats(const char *context = "n/a") {
-  char buffer[128];
-  sprintf(buffer, "%s RAM (total): %i, (used): %i, (free): %i, (max): %i, (stacksize): %i", context, startStack, usedMem, freeRam, maxStack, stackSize);
-  Serial.println(buffer);
-}
 
-void nestedPrintStats() {
-  printStats("Nested");
-}
+
+
 
 void setup() {
   startStack = freeMemory();  // update global variable freeRam
@@ -126,12 +104,24 @@ void getRAMstats(const char *context) {
   printStats(context);
 }
 
+int32_t nestedRAMStats() {
+  int32_t memoryHog = 1;
+  getRAMstats("Nested");
+  return memoryHog;
+}
+
+int32_t DoublenestedRAMStats() {
+  int32_t memoryHog = 1;
+  nestedRAMStats();
+  return memoryHog;
+}
 
 void loop() {
   getRAMstats("loop");
   delay(2000);
+  nestedRAMStats();
 
   // spareFunction(nameString);
   // addToArray(random());
-  //  printArray(intArray);
+  // printArray(intArray);
 }
