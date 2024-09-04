@@ -13,6 +13,7 @@ int trackRAM::begin() {
   int currentHeapSize = trackRAM::heapSize();
   int currentFreeRAM = trackRAM::freeMemory();
   static_data = total_mem - (currentFreeRAM + currentStackSize + currentHeapSize);
+  int dynamic_mem = currentFreeRAM + currentStackSize;
   Serial.print("total_mem: ");
   Serial.println(total_mem);
   Serial.print("heap_start: ");
@@ -23,11 +24,12 @@ int trackRAM::begin() {
   Serial.println(currentHeapSize);
   Serial.print("free_ram: ");
   Serial.println(currentFreeRAM);
-  Serial.print("\nCalculating static_data (should match compiler output!): ");
+  Serial.print("Calculating static_data (should match compiler output!): ");
   Serial.println(static_data);  // These should be the same?
-
+  Serial.print("Calculating dynamic_mem (should match compiler output!): ");
+  Serial.println(dynamic_mem);  // These should be the same?
   int calculated_memory = currentStackSize + currentHeapSize + currentFreeRAM + static_data;
-  Serial.print("\nCalculating memory: ");
+  Serial.print("Calculating memory: ");
   Serial.println(calculated_memory);  // These should be the same?
 
 
