@@ -76,18 +76,17 @@ void loop() {
   // delay(2000);
   ///nestedRAMStats();
   //int *ptr = malloc(8);
-  uint8_t* ptr = (uint8_t*)malloc(8);
-  for (int i = 0; i < 8; i++) {
+  uint8_t* ptr = (uint8_t*)malloc(100);
+  for (int i = 0; i < 100; i++) {
     ptr[i] = i;  // Fill with some data
   }
 
   Serial.println("Contents of the allocated memory:");
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 100; i++) {
     Serial.print(ptr[i]);
     Serial.print(" ");
   }
+  Serial.println();
+  free(ptr);
 
-  // spareFunction(nameString);
-  // addToArray(random());
-  // printArray(intArray);
 }
