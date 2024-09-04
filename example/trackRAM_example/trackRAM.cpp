@@ -2,10 +2,8 @@
 
 
 
-
 trackRAM::trackRAM() {
 }
-
 
 
 
@@ -103,6 +101,7 @@ inline size_t trackRAM::stackSize() {
 
 
 int trackRAM::heapStart() {
+  heap_start;
   // Print the address of the start of the heap
   //Serial.print(F("Start of heap: "));
   heap_start = (uintptr_t)&__malloc_heap_start;
