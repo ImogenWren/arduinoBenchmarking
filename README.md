@@ -1,5 +1,5 @@
-# arduinoBenchmarking
-_Benchmarking and hardware tracking functions library & examples_
+# trackRAM_arduino
+_Benchmarking and hardware RAM tracking functions library & examples_
 
 ## Typical Output
 _begin() method with debugging_ <br>
