@@ -63,7 +63,6 @@ void printHeapStats();
 // Var
 int total_mem = TOTAL_SRAM_BYTES;  // NOTE totalMem value relys on user input for timebeing, there does not seem to be a programatic way to get this value
 int static_data;   // The difference between the freeRAM at bootup and totalMem, should be similar to heap_start?
-int global_vars;    // trying to get the size of the static data directly to compare with the report from the compiler, even if we have to backtrack to get this
 int free_RAM; // the last updated free ram between top of stack & bottom of heap
 int stack_size;  // the last updated size of the stack by measuring the difference between RAMEND and SP (Stack Pointer)
 int heap_size;

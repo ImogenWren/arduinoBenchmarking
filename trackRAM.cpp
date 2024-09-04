@@ -5,7 +5,7 @@
 trackRAM::trackRAM() {
 }
 
-
+#define PRINT_OPENING_STATS true
 
 int trackRAM::begin() {
   int init_heap_start = trackRAM::heapStart();
@@ -14,6 +14,8 @@ int trackRAM::begin() {
   int currentFreeRAM = trackRAM::freeMemory();
   static_data = total_mem - (currentFreeRAM + currentStackSize + currentHeapSize);
   int dynamic_mem = currentFreeRAM + currentStackSize;
+  int calculated_memory = currentStackSize + currentHeapSize + currentFreeRAM + static_data;
+#if PRINT_OPENING_STATS == true
   Serial.print("total_mem: ");
   Serial.println(total_mem);
   Serial.print("heap_start: ");
@@ -28,17 +30,19 @@ int trackRAM::begin() {
   Serial.println(static_data);  // These should be the same?
   Serial.print("Calculating dynamic_mem (should match compiler output!): ");
   Serial.println(dynamic_mem);  // These should be the same?
-  int calculated_memory = currentStackSize + currentHeapSize + currentFreeRAM + static_data;
   Serial.print("Calculating memory: ");
-  Serial.println(calculated_memory);  // These should be the same?
-
-
+  Serial.println(calculated_memory);  // Should Equal total_mem
+  //trackRAM::printStats("begin");
+#endif
+  trackRAM::printStats("begin");
   return static_data;
 }
 
+
+
 void trackRAM::printStats(const char *context) {
   char buffer[128];
-  // sprintf(buffer, "%10s RAM (total): %4i, (used): %4i, (free): %4i, (max): %4i, (stacksize): %4i", context, totalMem, startStack, usedMem, freeRam, maxStack, stackSize);
+  sprintf(buffer, "%10s RAM (total): %4i, (free): %4i, (stack): %4i, (heap): %4i, (static): %4i", context, total_mem, free_RAM, stack_size, heap_size, static_data);
   Serial.println(buffer);
 }
 
