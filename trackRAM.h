@@ -9,6 +9,16 @@ _Library for tracking RAM usage for Arduino AVR Microcontrollers_
 
 #pragma once
 
+#if (ARDUINO >=100)
+#include <Arduino.h>
+#else
+#include <wProgram.h>
+#endif
+
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h> 
+
 #if BOARD_TYPE == MEGA
 #define TOTAL_SRAM_BYTES 8192
 #elif BOARD_TYPE == UNO
@@ -23,16 +33,20 @@ public:
 // Constructor
 trackRAM();
 // Methods
-begin(); // Must be called at startup
+int begin(); // Must be called at startup
 
 // Global Method, call in nested functions to track mem usage at that point in runtime
 void getMEMstats(const char *context);
 
 // Get & Calculate Methods
-// Gets the total free memory between the stack & the heap, returns freeRAM
+// Gets the total free memory between the stack & the heap, returns free_RAM
 int freeMemory();
-// Gets the Size of the Stack
-static inline size_t stack_size();
+int heapSize();
+inline size_t stackSize();
+
+
+
+
 
 // Reporting Methods
 void printStats(const char *context = "n/a");
@@ -47,19 +61,19 @@ void printHeapStats();
 
 
 // Var
-int totalMem = TOTAL_SRAM_BYTES;  // NOTE totalMem value relys on user input for timebeing, there does not seem to be a programatic way to get this value
-int staticData;   // The difference between the freeRAM at bootup and totalMem, 
-int globalVars;    // trying to get the size of the static data directly to compare with the report from the compiler, even if we have to backtrack to get this
-int freeRAM; // the last updated free ram between top of stack & bottom of heap
-int stackSize;  // the last updated size of the stack by measuring the difference between RAMEND and SP (Stack Pointer)
+int total_mem = TOTAL_SRAM_BYTES;  // NOTE totalMem value relys on user input for timebeing, there does not seem to be a programatic way to get this value
+int static_data;   // The difference between the freeRAM at bootup and totalMem, should be similar to heap_start?
+int global_vars;    // trying to get the size of the static data directly to compare with the report from the compiler, even if we have to backtrack to get this
+int free_RAM; // the last updated free ram between top of stack & bottom of heap
+int stack_size;  // the last updated size of the stack by measuring the difference between RAMEND and SP (Stack Pointer)
+int heap_size;
 
-static inline size_t stack_size() {
-  stackSize = RAMEND - SP;
-  return stackSize;
-}
+//extern int 
 
 
 private:
+int heapStart(); // Get the pointer for the start of the heap
+uintptr_t heap_start;   // pointer for the start of the heap, addresses lower than this are in use by static or global variables
 
 volatile size_t min_sp = RAMEND;
 
