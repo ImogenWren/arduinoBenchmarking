@@ -61,16 +61,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("\nArduino Benchmarking Example");
   ram.begin();
-
-  //ram.freeMemory()
-  //ram.heap_size()
-  //ram.stack_size()
- 
-  
-//  char buffer[128];
- // sprintf(buffer, "Total Mem: %i, staticData: %i heap_start: %i",ram.totalMem, ram.heap_start, 
-  
-
 }
 
 
@@ -78,32 +68,24 @@ void setup() {
 
 
 
-
-
-void getRAMstats(const char *context) {
- // freeMemory();
-//  stack_size();
-//  max_stack_size();
-//  usedMemory();
- // printStats(context);
-}
-
-int32_t nestedRAMStats() {
-  int32_t memoryHog = 1;
-  getRAMstats("Nested");
-  return memoryHog;
-}
-
-int32_t DoublenestedRAMStats() {
-  int32_t memoryHog = 1;
-  nestedRAMStats();
-  return memoryHog;
-}
 
 void loop() {
- // getRAMstats("loop");
- // delay(2000);
- ///nestedRAMStats();
+  ram.getPrintStats("loop");
+  delay(5000);
+  // getRAMstats("loop");
+  // delay(2000);
+  ///nestedRAMStats();
+  //int *ptr = malloc(8);
+  uint8_t* ptr = (uint8_t*)malloc(8);
+  for (int i = 0; i < 8; i++) {
+    ptr[i] = i;  // Fill with some data
+  }
+
+  Serial.println("Contents of the allocated memory:");
+  for (int i = 0; i < 8; i++) {
+    Serial.print(ptr[i]);
+    Serial.print(" ");
+  }
 
   // spareFunction(nameString);
   // addToArray(random());

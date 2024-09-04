@@ -25,6 +25,8 @@ _Library for tracking RAM usage for Arduino AVR Microcontrollers_
 #define TOTAL_SRAM_BYTES 2000
 #endif
 
+#define PRINT_OPENING_STATS true
+#define PERIODIC_RAM_SAMPLING true   // automatically run sampling in background to get average stats, or disable and manually getPrintStats in important locations
 
 
 class trackRAM{
@@ -36,7 +38,8 @@ trackRAM();
 int begin(); // Must be called at startup
 
 // Global Method, call in nested functions to track mem usage at that point in runtime
-void getMEMstats(const char *context);
+void getStats();
+void getPrintStats(const char *context);
 
 // Get & Calculate Methods
 // Gets the total free memory between the stack & the heap, returns free_RAM
@@ -66,6 +69,10 @@ int static_data;   // The difference between the freeRAM at bootup and totalMem,
 int free_RAM; // the last updated free ram between top of stack & bottom of heap
 int stack_size;  // the last updated size of the stack by measuring the difference between RAMEND and SP (Stack Pointer)
 int heap_size;
+
+int max_heap;
+int max_stack;
+
 
 //extern int 
 
