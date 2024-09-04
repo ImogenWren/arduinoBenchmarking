@@ -27,7 +27,7 @@ _Library for tracking RAM usage for Arduino AVR Microcontrollers_
 #define TOTAL_SRAM_BYTES 2000
 #endif
 
-#define PRINT_OPENING_STATS true
+#define PRINT_OPENING_STATS false
 
 
 
