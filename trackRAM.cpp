@@ -10,14 +10,18 @@ trackRAM::trackRAM() {
 
 
 int trackRAM::begin() {
+#if PRINT_OPENING_STATS == true
   int init_heap_start = trackRAM::heapStart();  // Must be called at start to understand static data
-  int currentStackSize = trackRAM::stackSize();
+#else
+  trackRAM::heapStart();  // Must be called at start to understand static data
+#endif
   int currentHeapSize = trackRAM::heapSize();
+  int currentStackSize = trackRAM::stackSize();
   int currentFreeRAM = trackRAM::freeMemory();
-  static_data = total_mem - (currentFreeRAM + currentStackSize + currentHeapSize);
+  static_data = total_mem - (currentFreeRAM + currentStackSize + currentHeapSize);  
+#if PRINT_OPENING_STATS == true
   int dynamic_mem = currentFreeRAM + currentStackSize;
   int calculated_memory = currentStackSize + currentHeapSize + currentFreeRAM + static_data;
-#if PRINT_OPENING_STATS == true
   Serial.print(F("total_mem: "));
   Serial.println(total_mem);
   Serial.print(F("heap_start: "));
@@ -44,23 +48,26 @@ int trackRAM::begin() {
 
 void trackRAM::printStats(const char *context) {
   char buffer[128];
-  sprintf(buffer, "%10s RAM (total): %4i, (free): %4i, (stack,max): %4i,%4i, (heap,max): %4i,%4i, (static): %4i", context, total_mem, free_RAM, stack_size, max_stack, heap_size, max_heap, static_data);
+  int percentage = int(round(100/(total_mem/free_RAM)));
+  sprintf(buffer, "%10s RAM (total): %4i, (free, %%): %4i,%3i, (stack,max): %4i,%4i, (heap,max): %4i,%4i, (static): %4i", context, total_mem, free_RAM, percentage ,stack_size, max_stack, heap_size, max_heap, static_data);
   Serial.println(buffer);
 }
 
 
-void trackRAM::getStats() {
+int trackRAM::getStats() {
   int currentStack = trackRAM::stackSize();
   int currentHeap = trackRAM::heapSize();
   if (currentStack > max_stack) max_stack = currentStack;
   if (currentHeap > max_heap) max_heap = currentHeap;
-  trackRAM::freeMemory();
+  int freeMEM = trackRAM::freeMemory();
+  return freeMEM;
 }
 
 
-void trackRAM::getPrintStats(const char *context) {
-  trackRAM::getStats();
+int trackRAM::getPrintStats(const char *context) {
+  int freeMEM = trackRAM::getStats();
   trackRAM::printStats(context);
+  return freeMEM; 
 }
 
 
@@ -94,7 +101,7 @@ int trackRAM::heapSize() {
   return heap_size;
 }
 
-inline size_t trackRAM::stackSize() {
+inline int trackRAM::stackSize() {
   stack_size = RAMEND - SP;
   return stack_size;
 }

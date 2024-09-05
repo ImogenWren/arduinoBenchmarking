@@ -40,14 +40,14 @@ public:
   int begin();  // Must be called at startup
 
   // Global Method, call in nested functions to track mem usage at that point in runtime
-  void getStats();
-  void getPrintStats(const char *context);
+  int getStats();
+  int getPrintStats(const char *context);
 
   // Get & Calculate Methods
   // Gets the total free memory between the stack & the heap, returns free_RAM
   int freeMemory();
   int heapSize();
-  inline size_t stackSize();
+  inline int stackSize();
 
 
 
@@ -86,5 +86,5 @@ private:
   int heapStart();       // Get the pointer for the start of the heap
   uintptr_t heap_start;  // pointer for the start of the heap, addresses lower than this are in use by static or global variables
 
-  volatile size_t min_sp = RAMEND;
+  volatile int min_sp = RAMEND;
 };
